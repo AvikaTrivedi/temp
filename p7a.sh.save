@@ -1,0 +1,71 @@
+#!/bin/bash
+while true
+do
+    echo -e "\nEnter your choice: \n(1) Make directory \n(2) Remove empty directory \n(3) Remove non-empty directory \n(4) Copy directory \n(5) Move directory \n(6) List directories \n(7) Exit"
+    read -p "Choice: " choice
+
+    case $choice in
+        1)  # Create a directory
+            read -p "Enter the directory name you want to create: " dirn
+            if [ -d "$dirn" ]; then
+                echo "Error: Directory '$dirn' already exists!"
+            else
+                mkdir "$dirn" && echo "Directory '$dirn' created!" || echo "Error: Failed to create directory '$dirn'."
+            fi
+            ;;
+        2)  # Remove an empty directory
+            read -p "Enter the (empty) directory name you want to remove: " dirn
+            if [ -d "$dirn" ]; then
+                if rmdir "$dirn" 2>/dev/null; then
+                    echo "Directory '$dirn' removed!"
+                else
+                    echo "Error: Directory '$dirn' is not empty or could not be removed!"
+                fi
+            else
+                echo "Error: Directory '$dirn' does not exist!"
+            fi
+            ;;
+        3)  # Remove a non-empty directory
+            read -p "Enter the directory name you want to remove (non-empty): " dirn
+            if [ -d "$dirn" ]; then
+                rm -rf "$dirn" && echo "Directory '$dirn' removed!" || echo "Error: Failed to remove directory '$dirn'."
+            else
+                echo "Error: Directory '$dirn' does not exist!"
+            fi
+            ;;
+        4)  # Copy a directory
+            read -p "Enter the source directory name: " source
+            read -p "Enter the destination directory name: " desti
+            if [ -d "$source" ]; then
+                cp -r "$source" "$desti" && echo "Directory '$source' copied to '$desti'!" || echo "Error: Failed to copy directory."
+            else
+                echo "Error: Source directory '$source' does not exist!"
+            fi
+            ;;
+        5)  # Move a directory
+            read -p "Enter the source directory name: " source
+            read -p "Enter the destination directory name: " desti
+            if [ -d "$source" ]; then
+                mv "$source" "$desti" && echo "Directory '$source' moved to '$desti'!" || echo "Error: Failed to move directory."
+            else
+                echo "Error: Source directory '$source' does not exist!"
+            fi
+            ;;
+        6)  # List all directories in the current directory
+            echo "Listing directories in the current directory:"
+            dirs=$(find . -type d)
+            if [ -z "$dirs" ]; then
+                echo "No directories found!"
+            else
+                echo "$dirs"
+            fi
+            ;;
+        7)  # Exit the script
+            echo "Exiting... Goodbye!"
+            break
+            ;;
+        *)  # Invalid option
+            echo "Error: Invalid choice! Please try again."
+            ;;
+    esac
+done
